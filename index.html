@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unduh Video Sosial Media dan YouTube</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6D28D9',
+                        secondary: '#1F2937',
+                        dark: '#111827',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes colorChange {
+            0% { color: #6D28D9; }
+            50% { color: #9F7AEA; }
+            100% { color: #6D28D9; }
+        }
+        .animated-title {
+            animation: colorChange 3s infinite;
+        }
+        .cs-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cs-float img {
+            width: 50px;
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+        .cs-float:hover img {
+            transform: scale(1.1);
+        }
+        .cs-float span {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #FFFFFF;
+        }
+        @media (max-width: 640px) {
+            .cs-float {
+                bottom: 10px;
+                right: 10px;
+            }
+            .cs-float img {
+                width: 40px;
+                height: 40px;
+            }
+            .cs-float span {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-100 min-h-screen flex flex-col font-sans">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-dark text-white transform -translate-x-full transition-transform duration-300">
+        <div class="p-4">
+            <h2 class="text-2xl font-semibold mb-4">--- Info</h2>
+            <ul class="space-y-2">
+                <li><a href="#" onclick="showPlatformLink('instagram')" class="block py-2 px-4 rounded hover:bg-gray-800">Instagram</a></li>
+                <li><a href="#" onclick="showPlatformLink('github')" class="block py-2 px-4 rounded hover:bg-gray-800">Github</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Hamburger Button -->
+    <button id="hamburgerButton" class="fixed top-4 left-4 z-50 text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+    </button>
+
+    <header class="bg-secondary py-4 sm:py-8 border-b border-gray-700">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center animated-title">MediaFetch</h1>
+            <p class="text-center mt-2 text-sm sm:text-base md:text-lg text-gray-300">Unduh video dari YouTube, Facebook, X/Twitter, Instagram, Tiktok, Image Tiktok, atau lagu dari Spotify dengan cepat dan mudah</p>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-6 sm:py-8">
+        <div class="max-w-4xl mx-auto bg-secondary rounded-2xl shadow-lg overflow-hidden border border-gray-700">
+            <div class="p-4 sm:p-6">
+                <form id="downloadForm" class="mb-6">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <input type="url" id="videoUrl" placeholder="Tempel URL video di sini" required
+                            class="flex-grow px-4 py-3 rounded-lg bg-dark border border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary text-white placeholder-gray-400 text-sm sm:text-base">
+                        <button type="submit"
+                            class="px-6 sm:px-8 py-3 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold text-sm sm:text-base">
+                            Unduh 
+                        </button>
+                    </div>
+                </form>
+
+                <div id="result" class="hidden">
+                    <div id="videoInfo" class="mb-6"></div>
+                    <div id="downloadOptions" class="space-y-4"></div>
+                </div>
+
+                <div id="loading" class="hidden text-center py-8">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-t-4 border-b-4 border-primary"></div>
+                    <p class="mt-4 text-base sm:text-lg">Sedang memproses link Anda...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Placeholder for Platform link -->
+        <div id="platformLinkSection" class="hidden mt-8">
+            <h2 class="text-xl sm:text-2xl font-semibold mb-4">Link</h2>
+            <a id="platformLink" href="#" class="text-blue-400 hover:underline"></a>
+        </div>
+    </main>
+
+    <!-- CS floating icon -->
+    <div class="cs-float" onclick="window.open('https://wa.me/+6283177443185', '_blank')">
+        <img src="help-desk.png" alt="Customer Service">
+        <span>Ada pertanyaan?</span>
+    </div>
+
+    <footer class="bg-secondary py-4 sm:py-6 border-t border-gray-700">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400 text-sm sm:text-base">&copy; 2024 MediaFetch</p>
+            <div class="mt-2 space-x-2 sm:space-x-4 text-sm sm:text-base">
+                <a href="#" class="text-gray-400 hover:text-primary transition duration-300">Kebijakan Privasi</a>
+                <a href="#" class="text-gray-400 hover:text-primary transition duration-300">Syarat dan Ketentuan</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle Sidebar
+        document.getElementById('hamburgerButton').addEventListener('click', function () {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Function to display platform link
+        function showPlatformLink(platformId) {
+            const platformLinks = {
+                'instagram': 'https://www.instagram.com/beginneer.noob/',
+                'github': 'https://github.com/Beginneernoob',
+            };
+            const platformLinkSection = document.getElementById('platformLinkSection');
+            const platformLink = document.getElementById('platformLink');
+
+            platformLink.href = platformLinks[platformId];
+            platformLink.textContent = platformLinks[platformId];
+
+            platformLinkSection.classList.remove('hidden');
+        }
+
+        const form = document.getElementById('downloadForm');
+        const result = document.getElementById('result');
+        const videoInfo = document.getElementById('videoInfo');
+        const downloadOptions = document.getElementById('downloadOptions');
+        const loading = document.getElementById('loading');
+    
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const mediaUrl = document.getElementById('videoUrl').value;
+        
+            result.classList.add('hidden');
+            loading.classList.remove('hidden');
+        
+            try {
+                let response;
+                let data;
+        
+                if (mediaUrl.includes('spotify.com')) {
+                    // Gunakan endpoint Spotify
+                    response = await fetch(`https://fastrestapis.fasturl.cloud/tool/spotify/downloader?url=${encodeURIComponent(mediaUrl)}`);
+                    data = await response.json();
+                    if (data.status === 200 && data.data) {
+                        displaySpotifyResult(data.data);
+                    } else {
+                        throw new Error('Gagal mengambil informasi dari Spotify');
+                    }
+                } else if (mediaUrl.includes('tiktok.com')) {
+                    // Gunakan endpoint TikTok
+                    response = await fetch(`https://api.tiklydown.eu.org/api/download/v5?url=${encodeURIComponent(mediaUrl)}`);
+                    data = await response.json();
+                    if (data.status === 200 && data.result) {
+                        displayTikTokResult(data.result);
+                    } else {
+                        throw new Error('Gagal mengambil informasi dari TikTok');
+                    }
+                } else {
+                    // Gunakan endpoint downloader umum
+                    response = await fetch(`https://fastrestapis.fasturl.cloud/tool/downloader?link=${encodeURIComponent(mediaUrl)}`);
+                    data = await response.json();
+                    if (data.status === 200 && data.results && data.results.data) {
+                        if (mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be')) {
+                            displayYouTubeResult(data.results.data);
+                        } else if (Array.isArray(data.results.data)) {
+                            const uniqueData = removeDuplicates(data.results.data);
+                            if (uniqueData[0].hasOwnProperty('resolution')) {
+                                displayFacebookResult(uniqueData);
+                            } else if (uniqueData[0].hasOwnProperty('thumbnail')) {
+                                displayInstagramPostResult(uniqueData);
+                            } else {
+                                displayInstagramResult(uniqueData);
+                            }
+                        } else {
+                            displayTwitterResult(data.results.data);
+                        }
+                    } else {
+                        throw new Error('Gagal mengambil informasi media');
+                    }
+                }
+            } catch (error) {
+                alert('Terjadi kesalahan: ' + error.message);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        });
+
+        function removeDuplicates(data) {
+            const uniqueUrls = new Set();
+            return data.filter(item => {
+                if (!uniqueUrls.has(item.url)) {
+                    uniqueUrls.add(item.url);
+                    return true;
+                }
+                return false;
+            });
+        }
+        
+        function displayTikTokResult(data) {
+    videoInfo.innerHTML = `
+        <div class="flex items-center bg-dark rounded-lg overflow-hidden border border-gray-700 p-4">
+            <img src="${data.cover}" alt="Thumbnail video" class="w-24 h-24 object-cover rounded-lg mr-4">
+            <div>
+                <h2 class="text-xl font-semibold mb-2 text-primary">${data.title}</h2>
+                <p class="text-gray-300">Durasi: ${data.duration > 0 ? data.duration + ' detik' : 'N/A'}</p>
+            </div>
+        </div>
+    `;
+
+    let mediaOptions = '';
+
+    if (data.hdplay) {
+        mediaOptions += `
+            <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
+                <div>
+                    <span class="font-medium text-lg text-gray-200">Video HD</span>
+                    <p class="text-gray-400 text-sm">Size: ${data.hd_size ? data.hd_size.format : 'N/A'}</p>
+                </div>
+                <a href="${data.hdplay}" target="_blank" rel="noopener noreferrer"
+                    class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                    Unduh HD
+                </a>
+            </div>
+        `;
+    }
+
+    if (data.play) {
+        mediaOptions += `
+            <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
+                <div>
+                    <span class="font-medium text-lg text-gray-200">Video</span>
+                    <p class="text-gray-400 text-sm">Size: ${data.size ? data.size.format : 'N/A'}</p>
+                </div>
+                <a href="${data.play}" target="_blank" rel="noopener noreferrer"
+                    class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                    Unduh Video
+                </a>
+            </div>
+        `;
+    }
+
+    if (data.music) {
+        mediaOptions += `
+            <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
+                <div>
+                    <span class="font-medium text-lg text-gray-200">Musik</span>
+                </div>
+                <a href="${data.music}" target="_blank" rel="noopener noreferrer"
+                    class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                    Unduh Musik
+                </a>
+            </div>
+        `;
+    }
+
+    if (data.images && data.images.length > 0) {
+        mediaOptions += `<div class="mt-4"><span class="font-medium text-lg text-gray-200">Gambar Slide</span></div>`;
+        data.images.forEach((image, index) => {
+            mediaOptions += `
+                <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
+                    <img src="${image}" alt="Gambar ${index + 1}" class="w-24 h-24 object-cover rounded-lg mr-4">
+                   
+                    <a href="${image}" target="_blank" rel="noopener noreferrer"
+                        class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                        Unduh Gambar ${index + 1}
+                    </a>
+                </div>
+            `;
+        });
+    }
+
+    downloadOptions.innerHTML = mediaOptions;
+
+    result.classList.remove('hidden');
+}
+
+    
+        function displayFacebookResult(data) {
+            videoInfo.innerHTML = `
+                <div class="flex items-center bg-dark rounded-lg overflow-hidden border border-gray-700 p-4">
+                    <img src="${data[0].thumbnail}" alt="Thumbnail video" class="w-24 h-24 object-cover rounded-lg mr-4">
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2 text-primary">Video Facebook Siap Diunduh</h2>
+                        <p class="text-gray-300">Pilih kualitas video yang Anda inginkan:</p>
+                    </div>
+                </div>
+            `;
+    
+            downloadOptions.innerHTML = data.map(item => `
+                <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700">
+                    <span class="font-medium text-lg text-gray-200">${item.resolution}</span>
+                    <a href="${item.url}" target="_blank" rel="noopener noreferrer"
+                        class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                        Unduh
+                    </a>
+                </div>
+            `).join('');
+    
+            result.classList.remove('hidden');
+        }
+
+        function displayInstagramPostResult(data) {
+    videoInfo.innerHTML = `
+        <div class="flex items-center bg-dark rounded-lg overflow-hidden border border-gray-700 p-4">
+            <img src="${data[0].thumbnail}" alt="Thumbnail media" class="w-24 h-24 object-cover rounded-lg mr-4">
+            <div>
+                <h2 class="text-xl font-semibold mb-2 text-primary">Video Instagram Siap Diunduh</h2>
+                <p class="text-gray-300">Pilih Video yang ingin Anda unduh:</p>
+            </div>
+        </div>
+    `;
+
+    downloadOptions.innerHTML = data.map((item, index) => `
+        <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
+            <span class="font-medium text-lg text-gray-200">Media ${index + 1}</span>
+            <a href="${item.url}" target="_blank" rel="noopener noreferrer"
+                class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                Unduh
+            </a>
+        </div>
+    `).join('');
+
+    result.classList.remove('hidden');
+}
+    
+        function displayTwitterResult(data) {
+            videoInfo.innerHTML = `
+                <div class="bg-dark rounded-lg overflow-hidden border border-gray-700 p-4">
+                    <h2 class="text-xl font-semibold mb-2 text-primary">Video X/Twitter Siap Diunduh</h2>
+                    <p class="text-gray-300">Pilih kualitas video yang Anda inginkan:</p>
+                </div>
+            `;
+    
+            downloadOptions.innerHTML = Object.entries(data).map(([quality, url]) => `
+                <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700">
+                    <span class="font-medium text-lg text-gray-200">${quality}</span>
+                    <a href="${url}" target="_blank" rel="noopener noreferrer"
+                        class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                        Unduh
+                    </a>
+                </div>
+            `).join('');
+    
+            result.classList.remove('hidden');
+        }
+
+    
+        function displayYouTubeResult(data) {
+    videoInfo.innerHTML = `
+        <div class="flex items-center bg-dark rounded-lg overflow-hidden border border-gray-700 p-4">
+            <img src="${data.thumbnail}" alt="Thumbnail video" class="w-24 h-24 object-cover rounded-lg mr-4">
+            <div>
+                <h2 class="text-xl font-semibold mb-2 text-primary">${data.title}</h2>
+                <p class="text-gray-300">Channel: ${data.channel}</p>
+            </div>
+        </div>
+    `;
+
+    let videoOptions = '';
+    if (data.video_hd) {
+        videoOptions += `
+            <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
+                <span class="font-medium text-lg text-gray-200">Video HD</span>
+                <a href="${data.video_hd}" target="_blank" rel="noopener noreferrer"
+                    class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                    Unduh HD
+                </a>
+            </div>
+        `;
+    }
+    videoOptions += `
+        <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
+            <span class="font-medium text-lg text-gray-200">Video (${data.quality})</span>
+            <a href="${data.video}" target="_blank" rel="noopener noreferrer"
+                class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                Unduh Video
+            </a>
+        </div>
+    `;
+
+    downloadOptions.innerHTML = videoOptions + `
+        <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
+            <span class="font-medium text-lg text-gray-200">Audio</span>
+            <a href="${data.audio}" target="_blank" rel="noopener noreferrer"
+                class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                Unduh Audio
+            </a>
+        </div>
+    `;
+
+    result.classList.remove('hidden');
+}
+
+function displaySpotifyResult(data) {
+    let content = `
+        <div class="flex items-center bg-dark rounded-lg overflow-hidden border border-gray-700 p-4 mb-4">
+            <img src="${data.cover}" alt="Album cover" class="w-24 h-24 object-cover rounded-lg mr-4">
+            <div>
+                <h2 class="text-xl font-semibold mb-2 text-primary">${data.title}</h2>
+                <p class="text-gray-300">Pembuat: ${data.artists}</p>
+                <p class="text-gray-300">Tipe: ${data.type.charAt(0).toUpperCase() + data.type.slice(1)}</p>
+                ${data.releaseDate ? `<p class="text-gray-300">Tanggal Rilis: ${data.releaseDate}</p>` : ''}
+            </div>
+        </div>
+    `;
+
+    if (data.type === 'track') {
+        content += `
+            <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
+                <span class="font-medium text-lg text-gray-200">Audio</span>
+                <a href="${data.music}" target="_blank" rel="noopener noreferrer"
+                    class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                    Unduh Lagu
+                </a>
+            </div>
+        `;
+    } else if (data.type === 'album' || data.type === 'playlist') {
+        content += `<h3 class="text-lg font-semibold mb-2 text-primary mt-4">Daftar Lagu:</h3>`;
+        data.track.forEach((track, index) => {
+            content += `
+                <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-2">
+                    <div>
+                        <span class="font-medium text-lg text-gray-200">${index + 1}. ${track.title}</span>
+                        <p class="text-sm text-gray-400">Artis: ${track.artists}</p>
+                    </div>
+                    <a href="#" onclick="downloadSpotifyTrack('${track.id}', '${track.title}')" 
+                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
+                        Unduh
+                    </a>
+                </div>
+            `;
+        });
+    }
+
+    videoInfo.innerHTML = content;
+    downloadOptions.innerHTML = '';
+    result.classList.remove('hidden');
+}
+
+async function downloadSpotifyTrack(trackId, trackTitle) {
+    try {
+        const response = await fetch(`https://fastrestapis.fasturl.cloud/tool/spotify/downloader?url=https://open.spotify.com/track/${trackId}`);
+        const data = await response.json();
+        if (data.status === 200 && data.data && data.data.music) {
+            const downloadLink = document.createElement('a');
+            downloadLink.href = data.data.music;
+            downloadLink.download = `${trackTitle}.mp3`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        } else {
+            throw new Error('Gagal mengambil link unduhan');
+        }
+    } catch (error) {
+        alert('Terjadi kesalahan saat mengunduh lagu: ' + error.message);
+    }
+}
+    </script>
+</body>
+</html>
