@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sedang Dalam Perbaikan - MediaFetch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .blinking {
+            animation: blink 2s linear infinite;
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes caret {
+            from { border-color: transparent; }
+            to { border-color: white; }
+        }
+        .typing {
+            border-right: 2px solid white;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typing 4s steps(22) 1s 1 normal both, caret 0.75s steps(22) infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="text-center">
+        <h1 class="text-4xl font-bold mb-4">4<span class="text-purple-500">0</span>4</h1>
+        <div class="relative w-40 h-40 mx-auto mb-6">
+            <div class="absolute inset-0 bg-purple-500 rounded-full opacity-20 blinking"></div>
+            <img src="roket.png" alt="Astronaut" class="w-full h-full object-cover rounded-full floating">
+        </div>
+        <h2 class="text-lg font-semibold mb-3 typing">Oops! Kami Sedang Melakukan Perbaikan</h2>
+        <p class="text-sm mb-6">MediaFetch sedang dalam perawatan. Kami akan segera kembali!</p>
+        <a href="/" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300">
+            Coba Lagi Nanti
+        </a>
+    </div>
+
+    <script>
+        // Menginisialisasi efek ketik
+        document.addEventListener("DOMContentLoaded", function() {
+            const textElement = document.querySelector('.typing');
+            const textContent = textElement.textContent;
+            textElement.textContent = '';
+
+            let i = 0;
+            function typeWriter() {
+                if (i < textContent.length) {
+                    textElement.textContent += textContent.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 100);
+                }
+            }
+            typeWriter();
+        });
+    </script>
+</body>
+</html>
