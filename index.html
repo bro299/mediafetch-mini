@@ -324,21 +324,6 @@
                 `;
             }
 
-            if (data.play) {
-                mediaOptions += `
-                    <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
-                        <div>
-                            <span class="font-medium text-lg text-gray-200">Video</span>
-                            <p class="text-gray-400 text-sm">Size: ${data.size ? data.size.format : 'N/A'}</p>
-                        </div>
-                        <a href="${data.play}" target="_blank" rel="noopener noreferrer"
-                            class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-purple-700 transition duration-300 ease-in-out font-semibold">
-                            Unduh Video <i class="fas fa-download ml-2"></i>
-                        </a>
-                    </div>
-                `;
-            }
-
             if (data.music) {
                 mediaOptions += `
                     <div class="flex items-center justify-between bg-dark p-4 rounded-lg hover:bg-gray-800 transition duration-300 border border-gray-700 mt-4">
